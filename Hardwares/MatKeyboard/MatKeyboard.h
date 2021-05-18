@@ -7,29 +7,35 @@
 
 #include "main.h"
 
-struct Key{
+
+class Key {
+public:
+    Key() ;
+
+    void Keyboard_Init();
+
+    void KeyScan();
+
+    void SetRowHigh();
+
+    void SetRowLow();
+
+    void SetColHigh();
+
+    void SetColLow();
+
+    uint8_t ScanCol();
+
+    uint8_t ScanRow();
+
+    void TransposeMat();
+
+    void ReadNum();
+
     uint8_t r;
     uint8_t l;
+    uint16_t num;
 };
 
-void SetRowHigh();
-
-void SetRowLow();
-
-void SetColHigh();
-
-void SetColLow();
-
-void Keyboard_Init();
-
-uint8_t ScanCol();
-
-uint8_t ScanRow();
-
-void KeyScan(struct Key *key);
-
-void TransposeMat(struct Key *key);
-
-uint16_t ReadNum();
 
 #endif //RAILGUN_MATKEYBOARD_H
