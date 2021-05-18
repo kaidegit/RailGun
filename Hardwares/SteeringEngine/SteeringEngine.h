@@ -2,9 +2,17 @@
 // Created by yekai on 2021/5/18.
 //
 
-#ifndef __STEERINGENGINE_H
-#define __STEERINGENGINE_H
+#pragma once
 
-void Steering_Init();
+#include "stm32f4xx_hal_tim.h"
 
-#endif //RAILGUN_STEERINGENGINE_H
+class Steering{
+public:
+    Steering(TIM_HandleTypeDef *htim, uint32_t Channel,uint32_t initCompare);
+    void SetSteeringCompare(uint32_t compare);
+private:
+    TIM_HandleTypeDef *SteeringTim;
+    uint32_t SteeringChannel;
+    uint32_t SteeringCompare;
+};
+

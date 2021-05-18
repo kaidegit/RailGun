@@ -14,5 +14,4 @@ void main_cpp();
 }
 #endif
 
-void f();
 

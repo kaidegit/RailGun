@@ -20,12 +20,7 @@ void main_cpp() {
         key.ReadNum();
         sprintf(ch, "cpp:%d\r\n", key.num);
         HAL_UART_Transmit(&huart1, (uint8_t *) ch, strlen(ch), 0xff);
-        f();
     }
 #pragma clang diagnostic pop
 
-}
-
-void f(){
-    HAL_UART_Transmit(&huart1, (uint8_t *) "cpp", strlen("cpp"), 0xff);
 }
