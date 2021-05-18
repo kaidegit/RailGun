@@ -4,41 +4,41 @@
 
 #include "MatKeyboard.h"
 
-void SetRowHigh() {
+void Key::SetRowHigh() {
     HAL_GPIO_WritePin(KBD_R1_GPIO_Port, KBD_R1_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(KBD_R2_GPIO_Port, KBD_R2_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(KBD_R3_GPIO_Port, KBD_R3_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(KBD_R4_GPIO_Port, KBD_R4_Pin, GPIO_PIN_SET);
 }
 
-void SetRowLow() {
+void Key::SetRowLow() {
     HAL_GPIO_WritePin(KBD_R1_GPIO_Port, KBD_R1_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(KBD_R2_GPIO_Port, KBD_R2_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(KBD_R3_GPIO_Port, KBD_R3_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(KBD_R4_GPIO_Port, KBD_R4_Pin, GPIO_PIN_RESET);
 }
 
-void SetColHigh() {
+void Key::SetColHigh() {
     HAL_GPIO_WritePin(KBD_C1_GPIO_Port, KBD_C1_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(KBD_C2_GPIO_Port, KBD_C2_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(KBD_C3_GPIO_Port, KBD_C3_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(KBD_C4_GPIO_Port, KBD_C4_Pin, GPIO_PIN_SET);
 }
 
-void SetColLow() {
+void Key::SetColLow() {
     HAL_GPIO_WritePin(KBD_C1_GPIO_Port, KBD_C1_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(KBD_C2_GPIO_Port, KBD_C2_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(KBD_C3_GPIO_Port, KBD_C3_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(KBD_C4_GPIO_Port, KBD_C4_Pin, GPIO_PIN_RESET);
 }
 
-void Keyboard_Init() {
+void Key::Keyboard_Init() {
     SetRowLow();
     SetColHigh();
     HAL_Delay(10);
 }
 
-uint8_t ScanCol() {
+uint8_t Key::ScanCol() {
     if (!HAL_GPIO_ReadPin(KBD_C1_GPIO_Port, KBD_C1_Pin)) {
         return 1;
     }
@@ -54,7 +54,7 @@ uint8_t ScanCol() {
     return 0;
 }
 
-uint8_t ScanRow() {
+uint8_t Key::ScanRow() {
     if (!HAL_GPIO_ReadPin(KBD_R1_GPIO_Port, KBD_R1_Pin)) {
         return 1;
     }
@@ -70,26 +70,26 @@ uint8_t ScanRow() {
     return 0;
 }
 
-void KeyScan(struct Key *key) {
-    key->l = 0;
-    key->r = 0;
-    key->r = ScanCol();
-    if (key->r) {
+void Key::KeyScan() {
+    l = 0;
+    r = 0;
+    r = ScanCol();
+    if (r) {
         HAL_Delay(10);
         SetColLow();
         SetRowHigh();
         HAL_Delay(10);
-        key->l = ScanRow();
+        l = ScanRow();
         while (ScanRow()) {}
     }
-    if (key->r && key->l) {
-        TransposeMat(key);
+    if (r && l) {
+        TransposeMat();
     }
     Keyboard_Init();
 }
 
-void TransposeMat(struct Key *key) {
-    key->l = 5 - key->l;
+void Key::TransposeMat() {
+    l = 5 - l;
 }
 
 /*
@@ -100,13 +100,12 @@ void TransposeMat(struct Key *key) {
  *   1  2  3      |  3
  *   0        OK  |  4
  */
-uint16_t ReadNum() {
-    struct Key key;
-    uint16_t num = 0;
-    while (!((key.l == 4) && (key.r == 4))) {
-        KeyScan(&key);
-        if (key.l && key.r) {
-            switch (key.l * 10 + key.r) {
+void Key::ReadNum() {
+    num = 0;
+    while (!((l == 4) && (r == 4))) {
+        KeyScan();
+        if (l && r) {
+            switch (l * 10 + r) {
                 case 11:
                     num = num * 10 + 7;
                     break;
@@ -120,10 +119,10 @@ uint16_t ReadNum() {
                     num = num / 10;
                     break;
                 case 12:
-                    num = num * 10 +4;
+                    num = num * 10 + 4;
                     break;
                 case 22:
-                    num = num * 10 +5;
+                    num = num * 10 + 5;
                     break;
                 case 32:
                     num = num * 10 + 6;
@@ -135,7 +134,7 @@ uint16_t ReadNum() {
                     num = num * 10 + 2;
                     break;
                 case 33:
-                    num = num * 10 +3;
+                    num = num * 10 + 3;
                     break;
                 case 14:
                     num = num * 10;
@@ -145,7 +144,10 @@ uint16_t ReadNum() {
             }
         }
     }
-    return num;
+    l = 0;
+    r = 0;
 }
+
+Key::Key() : l(0), r(0), num(0){}
 
 

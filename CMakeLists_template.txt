@@ -45,7 +45,7 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
-include_directories(${includes} Hardwares/MatKeyboard)
+include_directories(${includes} Hardwares/MatKeyboard Hardwares/SteeringEngine)
 
 add_definitions(${defines})
 

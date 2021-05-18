@@ -28,7 +28,7 @@
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
 #include "string.h"
-#include "MatKeyboard.h"
+#include "main_cpp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -68,9 +68,6 @@ void SystemClock_Config(void);
   */
 int main(void) {
     /* USER CODE BEGIN 1 */
-    char ch[30];
-    struct Key key;
-    uint16_t keyNum;
     /* USER CODE END 1 */
 
     /* MCU Configuration--------------------------------------------------------*/
@@ -97,8 +94,7 @@ int main(void) {
     MX_USART6_UART_Init();
     MX_FSMC_Init();
     /* USER CODE BEGIN 2 */
-    Keyboard_Init();
-
+    main_cpp();
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -106,14 +102,6 @@ int main(void) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
     while (1) {
-//        KeyScan(&key);
-//        if (key.l && key.r) {
-//            sprintf(ch, "%d,%d\r\n", key.l, key.r);
-//            HAL_UART_Transmit(&huart1, ch, strlen(ch), 0xff);
-//        }
-        keyNum=ReadNum();
-        sprintf(ch, "%d\r\n", keyNum);
-        HAL_UART_Transmit(&huart1, ch, strlen(ch), 0xff);
 
         /* USER CODE END WHILE */
 
