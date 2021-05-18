@@ -46,6 +46,10 @@ else ()
 endif ()
 
 include_directories(${includes} Hardwares/MatKeyboard Hardwares/SteeringEngine Hardwares/LCD Middlewares/lvgl Middlewares)
+include_directories(Middlewares/lvgl/gui_guider_generated)
+include_directories(Middlewares/lvgl/gui_guider_generated/guider_customer_fonts)
+include_directories(Middlewares/lvgl/gui_guider_generated/guider_fonts)
+include_directories(Middlewares/lvgl/gui_guider_generated/images)
 
 add_definitions(${defines})
 

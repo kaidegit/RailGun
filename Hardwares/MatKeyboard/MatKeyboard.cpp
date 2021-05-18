@@ -2,7 +2,10 @@
 // Created by yekai on 2021/5/17.
 //
 
+#include <cstdio>
+#include <gui_guider.h>
 #include "MatKeyboard.h"
+#include "usart.h"
 
 void Key::SetRowHigh() {
     HAL_GPIO_WritePin(KBD_R1_GPIO_Port, KBD_R1_Pin, GPIO_PIN_SET);
@@ -93,8 +96,8 @@ void Key::TransposeMat() {
 }
 
 /*
- *   1  2  3  4
- * ----------------
+ * l 1  2  3  4
+ * ----------------  r
  *   7  8  9  BK  |  1
  *   4  5  6      |  2
  *   1  2  3      |  3
@@ -142,12 +145,16 @@ void Key::ReadNum() {
                 default:
                     break;
             }
+            char ch[30];
+            sprintf(ch, "%d\r\n", num);
+            lv_textarea_set_text(guider_ui.screen_distance, ch);
+            HAL_UART_Transmit(&huart1, (uint8_t *) ch, strlen(ch), 0xff);
         }
     }
     l = 0;
     r = 0;
 }
 
-Key::Key() : l(0), r(0), num(0){}
+Key::Key() : l(0), r(0), num(0) {}
 
 
