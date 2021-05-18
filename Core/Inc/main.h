@@ -60,6 +60,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define KBD_C2_Pin GPIO_PIN_0
 #define KBD_C2_GPIO_Port GPIOF
+#define KBD_C1_Pin GPIO_PIN_1
+#define KBD_C1_GPIO_Port GPIOF
 #define KBD_C3_Pin GPIO_PIN_2
 #define KBD_C3_GPIO_Port GPIOF
 #define KBD_C4_Pin GPIO_PIN_4
@@ -74,8 +76,8 @@ void Error_Handler(void);
 #define Charge_Control_GPIO_Port GPIOA
 #define ButtonSteering_Pin GPIO_PIN_10
 #define ButtonSteering_GPIO_Port GPIOB
-#define KBD_C1_Pin GPIO_PIN_15
-#define KBD_C1_GPIO_Port GPIOB
+#define LCD_BL_Pin GPIO_PIN_15
+#define LCD_BL_GPIO_Port GPIOB
 #define OMV_TX_Pin GPIO_PIN_6
 #define OMV_TX_GPIO_Port GPIOC
 #define OMV_RX_Pin GPIO_PIN_7
