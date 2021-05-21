@@ -35,6 +35,7 @@ public:
     uint8_t r;
     uint8_t l;
     uint16_t num;
+    uint8_t dis;
 };
 
 

@@ -30,6 +30,7 @@ void main_cpp() {
     lv_port_disp_init();
     setup_ui(&guider_ui);
     events_init(&guider_ui);
+    lv_textarea_set_cursor_hidden(guider_ui.screen_angle_text, true);
 
 
 #pragma clang diagnostic push
@@ -38,7 +39,6 @@ void main_cpp() {
         key.ReadNum();
 //        sprintf(ch, "%d\r\n", key.num);
 //        lv_textarea_set_text(guider_ui.screen_distance,ch);
-        HAL_UART_Transmit(&huart1, (uint8_t *) ch, strlen(ch), 0xff);
     }
 #pragma clang diagnostic pop
 

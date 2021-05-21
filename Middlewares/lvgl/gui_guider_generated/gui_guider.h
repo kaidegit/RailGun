@@ -15,12 +15,14 @@ extern "C" {
 typedef struct
 {
     lv_obj_t *screen;
-    lv_obj_t *screen_dis;
-    lv_obj_t *screen_angle;
     lv_obj_t *screen_distance;
+    lv_obj_t *screen_angle;
+    lv_obj_t *screen_distance_text;
     lv_obj_t *screen_label_1;
-    lv_obj_t *screen_angl;
+    lv_obj_t *screen_angle_text;
     lv_obj_t *screen_label_2;
+    lv_obj_t *screen_shoot;
+    lv_obj_t *screen_shoot_label;
 }lv_ui;
 
 void setup_ui(lv_ui *ui);

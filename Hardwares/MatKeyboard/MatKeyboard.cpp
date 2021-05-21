@@ -99,13 +99,13 @@ void Key::TransposeMat() {
  * l 1  2  3  4
  * ----------------  r
  *   7  8  9  BK  |  1
- *   4  5  6      |  2
- *   1  2  3      |  3
- *   0        OK  |  4
+ *   4  5  6  ^   |  2
+ *   1  2  3  v   |  3
+ *   0  <  >  OK  |  4
  */
 void Key::ReadNum() {
     num = 0;
-    while (!((l == 4) && (r == 4))) {
+    while (!((l == 4) && (r == 4) && (dis == 2))) {
         KeyScan();
         if (l && r) {
             switch (l * 10 + r) {
@@ -142,19 +142,66 @@ void Key::ReadNum() {
                 case 14:
                     num = num * 10;
                     break;
+                case 42:
+                    switch (dis) {
+                        case 1: // 角度框 -> 距离框
+                            num = 0;
+                            dis--;
+                            lv_textarea_set_cursor_hidden(guider_ui.screen_distance_text, false);
+                            lv_textarea_set_cursor_hidden(guider_ui.screen_angle_text, true);
+                            break;
+                        case 2: // 发射按钮 -> 角度框
+                            num = 0;
+                            dis--;
+                            lv_textarea_set_cursor_hidden(guider_ui.screen_angle_text, false);
+                            lv_btn_toggle(guider_ui.screen_shoot);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case 43:
+                    switch (dis) {
+                        case 0: // 距离框 -> 角度框
+                            num = 0;
+                            dis++;
+                            lv_textarea_set_cursor_hidden(guider_ui.screen_angle_text, false);
+                            lv_textarea_set_cursor_hidden(guider_ui.screen_distance_text, true);
+                            break;
+                        case 1: // 角度框 -> 发射按钮
+                            num = 0;
+                            dis++;
+                            lv_textarea_set_cursor_hidden(guider_ui.screen_angle_text, true);
+                            lv_btn_toggle(guider_ui.screen_shoot);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
                 default:
                     break;
             }
             char ch[30];
             sprintf(ch, "%d\r\n", num);
-            lv_textarea_set_text(guider_ui.screen_distance, ch);
-            HAL_UART_Transmit(&huart1, (uint8_t *) ch, strlen(ch), 0xff);
+            switch (dis) {
+                case 0:
+                    lv_textarea_set_text(guider_ui.screen_distance_text, ch);
+                    break;
+                case 1:
+                    lv_textarea_set_text(guider_ui.screen_angle_text, ch);
+                    break;
+                default:
+                    break;
+            }
         }
+    }
+    if (dis == 2){
+        HAL_UART_Transmit(&huart1,(uint8_t *)"shoot\r\n",8,0xff);
     }
     l = 0;
     r = 0;
 }
 
-Key::Key() : l(0), r(0), num(0) {}
+Key::Key() : l(0), r(0), num(0), dis(0) {}
 
 
