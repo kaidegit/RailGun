@@ -105,6 +105,8 @@ void Key::TransposeMat() {
  */
 void Key::ReadNum() {
     num = 0;
+    l = 0;
+    r = 0;
     while (!((l == 4) && (r == 4) && (dis == 2))) {
         KeyScan();
         if (l && r) {
@@ -195,11 +197,49 @@ void Key::ReadNum() {
             }
         }
     }
-    if (dis == 2){
-        HAL_UART_Transmit(&huart1,(uint8_t *)"shoot\r\n",8,0xff);
+    if (dis == 2) {
+        HAL_UART_Transmit(&huart1, (uint8_t *) "shoot\r\n", 8, 0xff);
+        lv_scr_load(guider_ui.main);
     }
     l = 0;
     r = 0;
+}
+
+void Key::ReadBtn() {
+    l = 0;
+    r = 0;
+    dis = 0;
+    while (!((l == 4) && (r == 4))) {
+        KeyScan();
+        if (l && r) {
+            switch (l * 10 + r) {
+                case 24:
+                    if (dis == 1) {
+                        dis = 0;
+                        lv_btn_toggle(guider_ui.main_Manual);
+                        lv_btn_toggle(guider_ui.main_Auto);
+                    }
+                    break;
+                case 34:
+                    if (dis == 0) {
+                        dis = 1;
+                        lv_btn_toggle(guider_ui.main_Manual);
+                        lv_btn_toggle(guider_ui.main_Auto);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    if (dis == 0) {
+        lv_scr_load(guider_ui.screen);
+        lv_textarea_set_cursor_hidden(guider_ui.screen_distance_text, false);
+        lv_textarea_set_cursor_hidden(guider_ui.screen_angle_text, true);
+        ReadNum();
+    } else if (dis == 1) {
+        HAL_UART_Transmit(&huart1, (uint8_t *) "auto shoot\r\n", 13, 0xff);
+    }
 }
 
 Key::Key() : l(0), r(0), num(0), dis(0) {}

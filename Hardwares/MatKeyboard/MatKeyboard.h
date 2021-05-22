@@ -32,6 +32,8 @@ public:
 
     void ReadNum();
 
+    void ReadBtn();
+
     uint8_t r;
     uint8_t l;
     uint16_t num;

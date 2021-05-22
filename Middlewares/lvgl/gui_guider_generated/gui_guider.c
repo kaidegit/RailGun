@@ -9,6 +9,7 @@
 
 
 void setup_ui(lv_ui *ui){
+    setup_scr_main(ui);
 	setup_scr_screen(ui);
-	lv_scr_load(ui->screen);
+	lv_scr_load(ui->main);
 }

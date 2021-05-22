@@ -30,15 +30,12 @@ void main_cpp() {
     lv_port_disp_init();
     setup_ui(&guider_ui);
     events_init(&guider_ui);
-    lv_textarea_set_cursor_hidden(guider_ui.screen_angle_text, true);
-
+    lv_btn_toggle(guider_ui.main_Manual);
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
     while (true) {
-        key.ReadNum();
-//        sprintf(ch, "%d\r\n", key.num);
-//        lv_textarea_set_text(guider_ui.screen_distance,ch);
+        key.ReadBtn();
     }
 #pragma clang diagnostic pop
 
