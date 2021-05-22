@@ -6,6 +6,7 @@
 #include <gui_guider.h>
 #include "MatKeyboard.h"
 #include "usart.h"
+#include "shoot.h"
 
 void Key::SetRowHigh() {
     HAL_GPIO_WritePin(KBD_R1_GPIO_Port, KBD_R1_Pin, GPIO_PIN_SET);
@@ -92,10 +93,14 @@ void Key::KeyScan() {
 }
 
 void Key::TransposeMat() {
+    auto temp = r;
     l = 5 - l;
+    r = l;
+    l = 5 - temp;
 }
 
 /*
+ *
  * l 1  2  3  4
  * ----------------  r
  *   7  8  9  BK  |  1
@@ -198,7 +203,6 @@ void Key::ReadNum() {
         }
     }
     if (dis == 2) {
-        HAL_UART_Transmit(&huart1, (uint8_t *) "shoot\r\n", 8, 0xff);
         lv_scr_load(guider_ui.main);
     }
     l = 0;
@@ -209,6 +213,8 @@ void Key::ReadBtn() {
     l = 0;
     r = 0;
     dis = 0;
+    lv_obj_set_state(guider_ui.main_Manual, LV_STATE_CHECKED);
+    lv_obj_clear_state(guider_ui.main_Auto, LV_STATE_CHECKED);
     while (!((l == 4) && (r == 4))) {
         KeyScan();
         if (l && r) {
@@ -236,9 +242,10 @@ void Key::ReadBtn() {
         lv_scr_load(guider_ui.screen);
         lv_textarea_set_cursor_hidden(guider_ui.screen_distance_text, false);
         lv_textarea_set_cursor_hidden(guider_ui.screen_angle_text, true);
+        lv_obj_clear_state(guider_ui.screen_shoot, LV_STATE_CHECKED);
         ReadNum();
     } else if (dis == 1) {
-        HAL_UART_Transmit(&huart1, (uint8_t *) "auto shoot\r\n", 13, 0xff);
+        AutoShoot();
     }
 }
 

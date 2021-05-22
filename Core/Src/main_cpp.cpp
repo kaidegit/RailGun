@@ -14,6 +14,7 @@
 #include "tim.h"
 #include "gui_guider.h"
 #include "events_init.h"
+#include "SteeringEngine.h"
 
 lv_ui guider_ui;
 
@@ -22,14 +23,21 @@ void main_cpp() {
     uint8_t i = 0;
     Key key;
     key.Keyboard_Init();
+
     LCD_Init();
     LCD_Clear(BLUE);
     HAL_TIM_Base_Start_IT(&htim14);
-
     lv_init();
     lv_port_disp_init();
     setup_ui(&guider_ui);
     events_init(&guider_ui);
+
+//    Steering s1(&htim2, TIM_CHANNEL_1, 1500);
+//    s1.SetSteeringCompare(1500);
+//    Steering s2(&htim2, TIM_CHANNEL_3, 1500);
+//    s2.SetSteeringCompare(1500);
+
+    lv_scr_load(guider_ui.main);
     lv_btn_toggle(guider_ui.main_Manual);
 
 #pragma clang diagnostic push
@@ -42,8 +50,8 @@ void main_cpp() {
 }
 
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-    if (htim->Instance == htim14.Instance){
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    if (htim->Instance == htim14.Instance) {
         lv_tick_inc(5);
         lv_task_handler();
     }

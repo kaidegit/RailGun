@@ -139,7 +139,7 @@ void setup_scr_screen(lv_ui *ui){
     lv_obj_add_style(ui->screen_distance_text, LV_PAGE_PART_EDGE_FLASH, &style_screen_distance_text_edge_flash);
     lv_obj_set_pos(ui->screen_distance_text, 20, 96);
     lv_obj_set_size(ui->screen_distance_text, 160, 44);
-    lv_textarea_set_text(ui->screen_distance_text,"distance");
+    lv_textarea_set_text(ui->screen_distance_text,"0");
     lv_obj_set_event_cb(ui->screen_distance_text, text_area_event_cb);
     lv_textarea_set_text_align(ui->screen_distance_text, LV_LABEL_ALIGN_LEFT);
 
@@ -215,7 +215,7 @@ void setup_scr_screen(lv_ui *ui){
     lv_obj_add_style(ui->screen_angle_text, LV_PAGE_PART_EDGE_FLASH, &style_screen_angle_text_edge_flash);
     lv_obj_set_pos(ui->screen_angle_text, 19, 202);
     lv_obj_set_size(ui->screen_angle_text, 160, 44);
-    lv_textarea_set_text(ui->screen_angle_text,"angle");
+    lv_textarea_set_text(ui->screen_angle_text,"0");
     lv_obj_set_event_cb(ui->screen_angle_text, text_area_event_cb);
     lv_textarea_set_text_align(ui->screen_angle_text, LV_LABEL_ALIGN_LEFT);
 
