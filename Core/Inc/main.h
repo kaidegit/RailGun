@@ -74,8 +74,8 @@ void Error_Handler(void);
 #define Shot_Control_GPIO_Port GPIOC
 #define Charge_Control_Pin GPIO_PIN_3
 #define Charge_Control_GPIO_Port GPIOA
-#define ButtonSteering_Pin GPIO_PIN_10
-#define ButtonSteering_GPIO_Port GPIOB
+#define BottomSteering_Pin GPIO_PIN_10
+#define BottomSteering_GPIO_Port GPIOB
 #define LCD_BL_Pin GPIO_PIN_15
 #define LCD_BL_GPIO_Port GPIOB
 #define OMV_TX_Pin GPIO_PIN_6
@@ -100,6 +100,8 @@ void Error_Handler(void);
 #define KBD_R1_GPIO_Port GPIOD
 #define KBD_R2_Pin GPIO_PIN_15
 #define KBD_R2_GPIO_Port GPIOG
+#define OMV_INT_Pin GPIO_PIN_3
+#define OMV_INT_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -17,7 +17,8 @@
 #include "SteeringEngine.h"
 
 lv_ui guider_ui;
-
+Steering topSteering(&htim2, TIM_CHANNEL_1);
+Steering bottomSteering(&htim2, TIM_CHANNEL_3);
 void main_cpp() {
     char ch[30];
     uint8_t i = 0;
@@ -32,10 +33,8 @@ void main_cpp() {
     setup_ui(&guider_ui);
     events_init(&guider_ui);
 
-//    Steering s1(&htim2, TIM_CHANNEL_1, 1500);
-//    s1.SetSteeringCompare(1500);
-//    Steering s2(&htim2, TIM_CHANNEL_3, 1500);
-//    s2.SetSteeringCompare(1500);
+    topSteering.init(1400, 1800, 1700);
+    bottomSteering.init(1250, 1800, 1530);
 
     lv_scr_load(guider_ui.main);
     lv_btn_toggle(guider_ui.main_Manual);
@@ -54,5 +53,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == htim14.Instance) {
         lv_tick_inc(5);
         lv_task_handler();
+    } else if (htim->Instance == htim13.Instance){
+        HAL_GPIO_WritePin(Shot_Control_GPIO_Port,Shot_Control_Pin,GPIO_PIN_RESET);
+        HAL_TIM_Base_Stop_IT(&htim13);
     }
 }

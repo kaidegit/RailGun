@@ -7,6 +7,19 @@
 #include "MatKeyboard.h"
 #include "usart.h"
 #include "shoot.h"
+#include "SteeringEngine.h"
+#include "main_cpp.h"
+
+uint16_t distance;
+
+uint16_t angle;
+
+uint16_t temp;
+
+char ch[30];
+
+extern Steering topSteering;
+extern Steering bottomSteering;
 
 void Key::SetRowHigh() {
     HAL_GPIO_WritePin(KBD_R1_GPIO_Port, KBD_R1_Pin, GPIO_PIN_SET);
@@ -185,6 +198,12 @@ void Key::ReadNum() {
                             break;
                     }
                     break;
+                case 24:
+                    lv_switch_off(guider_ui.screen_sw_1, LV_ANIM_ON);
+                    break;
+                case 34:
+                    lv_switch_on(guider_ui.screen_sw_1, LV_ANIM_ON);
+                    break;
                 default:
                     break;
             }
@@ -193,9 +212,11 @@ void Key::ReadNum() {
             switch (dis) {
                 case 0:
                     lv_textarea_set_text(guider_ui.screen_distance_text, ch);
+                    distance = num;
                     break;
                 case 1:
                     lv_textarea_set_text(guider_ui.screen_angle_text, ch);
+                    angle = num;
                     break;
                 default:
                     break;
@@ -203,6 +224,7 @@ void Key::ReadNum() {
         }
     }
     if (dis == 2) {
+        Shoot(distance, angle);
         lv_scr_load(guider_ui.main);
     }
     l = 0;
@@ -215,23 +237,61 @@ void Key::ReadBtn() {
     dis = 0;
     lv_obj_set_state(guider_ui.main_Manual, LV_STATE_CHECKED);
     lv_obj_clear_state(guider_ui.main_Auto, LV_STATE_CHECKED);
+    lv_obj_clear_state(guider_ui.main_Running, LV_STATE_CHECKED);
     while (!((l == 4) && (r == 4))) {
         KeyScan();
         if (l && r) {
             switch (l * 10 + r) {
+                // 向左移动
                 case 24:
+                    // 自动 -> 手动
                     if (dis == 1) {
                         dis = 0;
                         lv_btn_toggle(guider_ui.main_Manual);
                         lv_btn_toggle(guider_ui.main_Auto);
+                        // 运动 -> 自动
+                    } else if (dis == 2) {
+                        dis = 1;
+                        lv_btn_toggle(guider_ui.main_Running);
+                        lv_btn_toggle(guider_ui.main_Auto);
                     }
                     break;
+                    // 向右移动
                 case 34:
+                    // 手动 -> 自动
                     if (dis == 0) {
                         dis = 1;
                         lv_btn_toggle(guider_ui.main_Manual);
                         lv_btn_toggle(guider_ui.main_Auto);
+                        // 自动 -> 运动
+                    } else if (dis == 1) {
+                        dis = 2;
+                        lv_btn_toggle(guider_ui.main_Auto);
+                        lv_btn_toggle(guider_ui.main_Running);
                     }
+                    break;
+                case 42:
+                    topSteering.SetSteeringCompare(topSteering.SteeringCompare + 5);
+
+                    sprintf(ch, "%lu", topSteering.SteeringCompare);
+                    lv_label_set_text(guider_ui.main_Running_label, ch);
+                    break;
+                case 43:
+                    topSteering.SetSteeringCompare(topSteering.SteeringCompare - 5);
+                    sprintf(ch, "%lu", topSteering.SteeringCompare);
+                    lv_label_set_text(guider_ui.main_Running_label, ch);
+                    break;
+                case 11:
+                    temp = topSteering.SteeringCompare;
+                    topSteering.SetSteeringCompare(1700);
+                    HAL_Delay(2000);
+                    topSteering.SetSteeringCompare(temp);
+                    HAL_GPIO_WritePin(Charge_Control_GPIO_Port, Charge_Control_Pin, GPIO_PIN_SET);
+                    HAL_Delay(4000);
+                    HAL_GPIO_WritePin(Charge_Control_GPIO_Port, Charge_Control_Pin, GPIO_PIN_RESET);
+                    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
+                    HAL_Delay(500);
+                    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_RESET);
                     break;
                 default:
                     break;
@@ -243,11 +303,16 @@ void Key::ReadBtn() {
         lv_textarea_set_cursor_hidden(guider_ui.screen_distance_text, false);
         lv_textarea_set_cursor_hidden(guider_ui.screen_angle_text, true);
         lv_obj_clear_state(guider_ui.screen_shoot, LV_STATE_CHECKED);
+        lv_textarea_set_text(guider_ui.screen_distance_text, "0");
+        lv_textarea_set_text(guider_ui.screen_angle_text, "0");
         ReadNum();
     } else if (dis == 1) {
         AutoShoot();
+    } else if (dis == 2) {
+        RunningShoot();
     }
 }
+
 
 Key::Key() : l(0), r(0), num(0), dis(0) {}
 

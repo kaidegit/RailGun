@@ -139,7 +139,7 @@ void setup_scr_screen(lv_ui *ui){
     lv_obj_add_style(ui->screen_distance_text, LV_PAGE_PART_EDGE_FLASH, &style_screen_distance_text_edge_flash);
     lv_obj_set_pos(ui->screen_distance_text, 20, 96);
     lv_obj_set_size(ui->screen_distance_text, 160, 44);
-    lv_textarea_set_text(ui->screen_distance_text,"0");
+    lv_textarea_set_text(ui->screen_distance_text,"distance");
     lv_obj_set_event_cb(ui->screen_distance_text, text_area_event_cb);
     lv_textarea_set_text_align(ui->screen_distance_text, LV_LABEL_ALIGN_LEFT);
 
@@ -214,8 +214,8 @@ void setup_scr_screen(lv_ui *ui){
     lv_style_set_bg_opa(&style_screen_angle_text_edge_flash, LV_STATE_DEFAULT, 255);
     lv_obj_add_style(ui->screen_angle_text, LV_PAGE_PART_EDGE_FLASH, &style_screen_angle_text_edge_flash);
     lv_obj_set_pos(ui->screen_angle_text, 19, 202);
-    lv_obj_set_size(ui->screen_angle_text, 160, 44);
-    lv_textarea_set_text(ui->screen_angle_text,"0");
+    lv_obj_set_size(ui->screen_angle_text, 82, 44);
+    lv_textarea_set_text(ui->screen_angle_text,"angle");
     lv_obj_set_event_cb(ui->screen_angle_text, text_area_event_cb);
     lv_textarea_set_text_align(ui->screen_angle_text, LV_LABEL_ALIGN_LEFT);
 
@@ -243,7 +243,7 @@ void setup_scr_screen(lv_ui *ui){
     lv_style_set_pad_top(&style_screen_label_2_main, LV_STATE_DEFAULT, 0);
     lv_style_set_pad_bottom(&style_screen_label_2_main, LV_STATE_DEFAULT, 0);
     lv_obj_add_style(ui->screen_label_2, LV_LABEL_PART_MAIN, &style_screen_label_2_main);
-    lv_obj_set_pos(ui->screen_label_2, 191, 203);
+    lv_obj_set_pos(ui->screen_label_2, 104, 197);
     lv_obj_set_size(ui->screen_label_2, 26, 0);
 
     //Write codes screen_shoot
@@ -271,4 +271,73 @@ void setup_scr_screen(lv_ui *ui){
     lv_label_set_text(ui->screen_shoot_label, "发射");
     lv_obj_set_style_local_text_color(ui->screen_shoot_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_make(0x00, 0x00, 0x00));
     lv_obj_set_style_local_text_font(ui->screen_shoot_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &lv_font_simsun_24);
+
+    //Write codes screen_sw_1
+    ui->screen_sw_1 = lv_switch_create(ui->screen, NULL);
+
+    //Write style LV_SWITCH_PART_BG for screen_sw_1
+    static lv_style_t style_screen_sw_1_bg;
+    lv_style_init(&style_screen_sw_1_bg);
+
+    //Write style state: LV_STATE_DEFAULT for style_screen_sw_1_bg
+    lv_style_set_radius(&style_screen_sw_1_bg, LV_STATE_DEFAULT, 100);
+    lv_style_set_bg_color(&style_screen_sw_1_bg, LV_STATE_DEFAULT, lv_color_make(0xd4, 0xd7, 0xd9));
+    lv_style_set_bg_grad_color(&style_screen_sw_1_bg, LV_STATE_DEFAULT, lv_color_make(0xd4, 0xd7, 0xd9));
+    lv_style_set_bg_grad_dir(&style_screen_sw_1_bg, LV_STATE_DEFAULT, LV_GRAD_DIR_VER);
+    lv_style_set_bg_opa(&style_screen_sw_1_bg, LV_STATE_DEFAULT, 255);
+    lv_obj_add_style(ui->screen_sw_1, LV_SWITCH_PART_BG, &style_screen_sw_1_bg);
+
+    //Write style LV_SWITCH_PART_INDIC for screen_sw_1
+    static lv_style_t style_screen_sw_1_indic;
+    lv_style_init(&style_screen_sw_1_indic);
+
+    //Write style state: LV_STATE_DEFAULT for style_screen_sw_1_indic
+    lv_style_set_radius(&style_screen_sw_1_indic, LV_STATE_DEFAULT, 100);
+    lv_style_set_bg_color(&style_screen_sw_1_indic, LV_STATE_DEFAULT, lv_color_make(0x00, 0xa1, 0xb5));
+    lv_style_set_bg_grad_color(&style_screen_sw_1_indic, LV_STATE_DEFAULT, lv_color_make(0x00, 0xa1, 0xb5));
+    lv_style_set_bg_grad_dir(&style_screen_sw_1_indic, LV_STATE_DEFAULT, LV_GRAD_DIR_VER);
+    lv_style_set_bg_opa(&style_screen_sw_1_indic, LV_STATE_DEFAULT, 255);
+    lv_obj_add_style(ui->screen_sw_1, LV_SWITCH_PART_INDIC, &style_screen_sw_1_indic);
+
+    //Write style LV_SWITCH_PART_KNOB for screen_sw_1
+    static lv_style_t style_screen_sw_1_knob;
+    lv_style_init(&style_screen_sw_1_knob);
+
+    //Write style state: LV_STATE_DEFAULT for style_screen_sw_1_knob
+    lv_style_set_radius(&style_screen_sw_1_knob, LV_STATE_DEFAULT, 100);
+    lv_style_set_bg_color(&style_screen_sw_1_knob, LV_STATE_DEFAULT, lv_color_make(0xff, 0xff, 0xff));
+    lv_style_set_bg_grad_color(&style_screen_sw_1_knob, LV_STATE_DEFAULT, lv_color_make(0xff, 0xff, 0xff));
+    lv_style_set_bg_grad_dir(&style_screen_sw_1_knob, LV_STATE_DEFAULT, LV_GRAD_DIR_VER);
+    lv_style_set_bg_opa(&style_screen_sw_1_knob, LV_STATE_DEFAULT, 255);
+    lv_obj_add_style(ui->screen_sw_1, LV_SWITCH_PART_KNOB, &style_screen_sw_1_knob);
+    lv_obj_set_pos(ui->screen_sw_1, 160, 204);
+    lv_obj_set_size(ui->screen_sw_1, 40, 20);
+    lv_switch_set_anim_time(ui->screen_sw_1, 600);
+
+    //Write codes screen_label_3
+    ui->screen_label_3 = lv_label_create(ui->screen, NULL);
+    lv_label_set_text(ui->screen_label_3, "左  右");
+    lv_label_set_long_mode(ui->screen_label_3, LV_LABEL_LONG_BREAK);
+    lv_label_set_align(ui->screen_label_3, LV_LABEL_ALIGN_CENTER);
+
+    //Write style LV_LABEL_PART_MAIN for screen_label_3
+    static lv_style_t style_screen_label_3_main;
+    lv_style_init(&style_screen_label_3_main);
+
+    //Write style state: LV_STATE_DEFAULT for style_screen_label_3_main
+    lv_style_set_radius(&style_screen_label_3_main, LV_STATE_DEFAULT, 0);
+    lv_style_set_bg_color(&style_screen_label_3_main, LV_STATE_DEFAULT, lv_color_make(0xff, 0xff, 0xff));
+    lv_style_set_bg_grad_color(&style_screen_label_3_main, LV_STATE_DEFAULT, lv_color_make(0xff, 0xff, 0xff));
+    lv_style_set_bg_grad_dir(&style_screen_label_3_main, LV_STATE_DEFAULT, LV_GRAD_DIR_VER);
+    lv_style_set_bg_opa(&style_screen_label_3_main, LV_STATE_DEFAULT, 255);
+    lv_style_set_text_color(&style_screen_label_3_main, LV_STATE_DEFAULT, lv_color_make(0x00, 0x00, 0x00));
+    lv_style_set_text_font(&style_screen_label_3_main, LV_STATE_DEFAULT, &lv_font_simsun_12);
+    lv_style_set_text_letter_space(&style_screen_label_3_main, LV_STATE_DEFAULT, 2);
+    lv_style_set_pad_left(&style_screen_label_3_main, LV_STATE_DEFAULT, 0);
+    lv_style_set_pad_right(&style_screen_label_3_main, LV_STATE_DEFAULT, 0);
+    lv_style_set_pad_top(&style_screen_label_3_main, LV_STATE_DEFAULT, 0);
+    lv_style_set_pad_bottom(&style_screen_label_3_main, LV_STATE_DEFAULT, 0);
+    lv_obj_add_style(ui->screen_label_3, LV_LABEL_PART_MAIN, &style_screen_label_3_main);
+    lv_obj_set_pos(ui->screen_label_3, 132, 233);
+    lv_obj_set_size(ui->screen_label_3, 100, 0);
 }

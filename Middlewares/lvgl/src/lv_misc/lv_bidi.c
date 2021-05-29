@@ -18,7 +18,7 @@
  *********************/
 #define LV_BIDI_BRACKLET_DEPTH   4
 
-// Highest bit of the 16-bit pos_conv value specifies whether this pos is RTL or not
+// Highest bit of the 16-bit pos_conv value specifies whether this pos_flag is RTL or not
 #define GET_POS(x) ((x) & 0x7FFF)
 #define IS_RTL_POS(x) (((x) & 0x8000) != 0)
 #define SET_RTL_POS(x, is_rtl) (GET_POS(x) | ((is_rtl)? 0x8000: 0))

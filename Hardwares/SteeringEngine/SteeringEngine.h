@@ -6,13 +6,19 @@
 
 #include "main.h"
 
-class Steering{
+class Steering {
 public:
-    Steering(TIM_HandleTypeDef *htim, uint32_t Channel,uint32_t initCompare);
+    Steering(TIM_HandleTypeDef *htim, uint32_t Channel);
+
+    void init(uint16_t startCompare, uint16_t endCompare, uint16_t initCompare);
+
     void SetSteeringCompare(uint32_t compare);
+
+    uint32_t SteeringCompare;
 private:
     TIM_HandleTypeDef *SteeringTim;
     uint32_t SteeringChannel;
-    uint32_t SteeringCompare;
+    uint16_t maxCompare;
+    uint16_t minCompare;
 };
 

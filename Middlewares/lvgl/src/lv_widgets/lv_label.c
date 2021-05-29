@@ -951,7 +951,7 @@ void lv_label_ins_text(lv_obj_t * label, uint32_t pos, const char * txt)
     if(bidi_buf == NULL) return;
 
     _lv_bidi_process(txt, bidi_buf, lv_obj_get_base_dir(label));
-    _lv_txt_ins(ext->text, pos, bidi_buf);
+    _lv_txt_ins(ext->text, pos_flag, bidi_buf);
 
     _lv_mem_buf_release(bidi_buf);
 #else

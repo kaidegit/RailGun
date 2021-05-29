@@ -45,7 +45,7 @@ static lv_fs_res_t fs_open (lv_fs_drv_t * drv, void * file_p, const char * path,
 static lv_fs_res_t fs_close (lv_fs_drv_t * drv, void * file_p);
 static lv_fs_res_t fs_read (lv_fs_drv_t * drv, void * file_p, void * buf, uint32_t btr, uint32_t * br);
 static lv_fs_res_t fs_write(lv_fs_drv_t * drv, void * file_p, const void * buf, uint32_t btw, uint32_t * bw);
-static lv_fs_res_t fs_seek (lv_fs_drv_t * drv, void * file_p, uint32_t pos);
+static lv_fs_res_t fs_seek (lv_fs_drv_t * drv, void * file_p, uint32_t pos_flag);
 static lv_fs_res_t fs_size (lv_fs_drv_t * drv, void * file_p, uint32_t * size_p);
 static lv_fs_res_t fs_tell (lv_fs_drv_t * drv, void * file_p, uint32_t * pos_p);
 static lv_fs_res_t fs_remove (lv_fs_drv_t * drv, const char *path);
@@ -213,11 +213,11 @@ static lv_fs_res_t fs_write(lv_fs_drv_t * drv, void * file_p, const void * buf, 
  * Set the read write pointer. Also expand the file size if necessary.
  * @param drv pointer to a driver where this function belongs
  * @param file_p pointer to a file_t variable. (opened with lv_ufs_open )
- * @param pos the new position of read write pointer
+ * @param pos_flag the new position of read write pointer
  * @return LV_FS_RES_OK: no error, the file is read
  *         any error from lv_fs_res_t enum
  */
-static lv_fs_res_t fs_seek (lv_fs_drv_t * drv, void * file_p, uint32_t pos)
+static lv_fs_res_t fs_seek (lv_fs_drv_t * drv, void * file_p, uint32_t pos_flag)
 {
     lv_fs_res_t res = LV_FS_RES_NOT_IMP;
 
