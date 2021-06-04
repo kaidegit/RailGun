@@ -12,7 +12,7 @@ extern "C" {
 #include "main.h"
 
 enum Position {
-    LEFT = 0, RIGHT, NFD, STOP
+    LEFT = 0, RIGHT, NFD, STOP, DIS
 };
 
 void Shoot(uint16_t dis, uint16_t angle);

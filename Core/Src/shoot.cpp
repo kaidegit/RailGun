@@ -20,6 +20,7 @@ enum Position pos_flag;
 uint16_t pos_err;
 uint8_t len;
 uint16_t dis_rec, angle_rec;
+uint8_t mode;
 
 bool position;
 bool isShot = false;
@@ -31,57 +32,71 @@ extern Steering bottomSteering;
 void Shoot(uint16_t dis, uint16_t angle) {
 //    switch ((dis + 5) / 10) {
 //        case 20:
-//            topSteering.SetSteeringCompare(1560);
+//            topSteering.SetSteeringCompare(1510);
+//            break;
+//        case 21:
+//            topSteering.SetSteeringCompare(1515);
 //            break;
 //        case 22:
-//            topSteering.SetSteeringCompare(1580);
+//            topSteering.SetSteeringCompare(1525);
 //            break;
 //        case 23:
-//            topSteering.SetSteeringCompare(1600);
+//            topSteering.SetSteeringCompare(1530);
 //            break;
 //        case 24:
+//            topSteering.SetSteeringCompare(1535);
+//            break;
 //        case 25:
-//            topSteering.SetSteeringCompare(1620);
+//            topSteering.SetSteeringCompare(1540);
 //            break;
 //        case 26:
+//            topSteering.SetSteeringCompare(1550);
+//            break;
 //        case 27:
-//            topSteering.SetSteeringCompare(1640);
+//            topSteering.SetSteeringCompare(1555);
 //            break;
 //        case 28:
-//            topSteering.SetSteeringCompare(1660);
+//            topSteering.SetSteeringCompare(1565);
 //            break;
 //        case 29:
+//            topSteering.SetSteeringCompare(1570);
+//            break;
 //        case 30:
-//            topSteering.SetSteeringCompare(1680);
+//            topSteering.SetSteeringCompare(1575);
 //            break;
 //        case 31:
-//            topSteering.SetSteeringCompare(1700);
+//            topSteering.SetSteeringCompare(1580);
 //            break;
 //        default:
+//            if (dis>300){
+//                topSteering.SetSteeringCompare(1580);
+//            } else {
+//                topSteering.SetSteeringCompare(1510);
+//            }
 //            break;
 //    }
-    auto p1 = 5.364e-06;
-    auto p2 = -0.005367;
-    auto p3 = 2.002;
-    auto p4 = -328.8;
-    auto p5 = 2.16e+04;
+    auto p1 = -1.537793861264471e-06;
+    auto p2 = 0.001674084311962;
+    auto p3 = -0.675897479945635;
+    auto p4 = 1.208877170121495e+02;
+    auto p5 = -6.545889634786366e+03;
     auto pwm_top = p1 * pow(dis, 4) + p2 * pow(dis, 3) + p3 * pow(dis, 2) + p4 * dis + p5;
-    topSteering.SetSteeringCompare(pwm_top);
+    topSteering.SetSteeringCompare((uint32_t) pwm_top);
 
     if (lv_switch_get_state(guider_ui.screen_sw_1)) {
         auto pwm_btm = -0.000386123680241354 * pow(angle, 4) + 0.0280159056629665 * pow(angle, 3) -
                        0.676912107500386 * pow(angle, 2) - 3.11750994103909 * pow(angle, 1) + 1532.09954751131;
-        bottomSteering.SetSteeringCompare(pwm_btm);
+        bottomSteering.SetSteeringCompare((uint32_t) pwm_btm);
     } else {
         auto pwm_btm = -0.000149184149184174 * pow(angle, 4) + 0.0141724941724961 * pow(angle, 3) -
                        0.427599067599110 * pow(angle, 2) + 13.3431901431904 * pow(angle, 1) + 1531.43956043956;
-        bottomSteering.SetSteeringCompare(pwm_btm);
+        bottomSteering.SetSteeringCompare((uint32_t) pwm_btm);
     }
 
     Charge(4);
-    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
-    HAL_Delay(500);
     HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_RESET);
+    HAL_Delay(500);
+    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
     HAL_Delay(2000);
     topSteering.SetSteeringCompare(1700);
     HAL_UART_Transmit(&huart1, (uint8_t *) "shoot\r\n", strlen("shoot\r\n"), 0xff);
@@ -91,13 +106,17 @@ void Shoot(uint16_t dis, uint16_t angle) {
 void AutoShoot() {
     receiveDone = false;
     pos_flag = LEFT;
-    while (pos_flag != STOP) {
+    enum Position last_move;
+    while (!((pos_flag == STOP) || (pos_flag == DIS))) {
+        receiveDone = false;
         if (pos_flag == LEFT) {
+            last_move = LEFT;
             HAL_UART_Receive_IT(&huart6, (uint8_t *) &uartByte, 1);
-            bottomSteering.SetSteeringCompare(bottomSteering.SteeringCompare + 1);
+            bottomSteering.SetSteeringCompare(bottomSteering.SteeringCompare + 5);
         } else if (pos_flag == RIGHT) {
+            last_move = RIGHT;
             HAL_UART_Receive_IT(&huart6, (uint8_t *) &uartByte, 1);
-            bottomSteering.SetSteeringCompare(bottomSteering.SteeringCompare - 1);
+            bottomSteering.SetSteeringCompare(bottomSteering.SteeringCompare - 5);
         } else if (pos_flag == NFD) {
             HAL_UART_Receive_IT(&huart6, (uint8_t *) &uartByte, 1);
             if (bottomSteering.SteeringCompare > 1530) {
@@ -107,22 +126,76 @@ void AutoShoot() {
             }
             HAL_Delay(100);
         }
-        HAL_Delay(30);
+//        HAL_Delay(30);
         while (!receiveDone) {}
     }
-    auto p1 = 5.364e-06;
-    auto p2 = -0.005367;
-    auto p3 = 2.002;
-    auto p4 = -328.8;
-    auto p5 = 2.16e+04;
+
+    if (last_move == LEFT) {
+        bottomSteering.SetSteeringCompare(bottomSteering.SteeringCompare - 5);
+    } else {
+        bottomSteering.SetSteeringCompare(bottomSteering.SteeringCompare + 5);
+    }
+    while (pos_flag != DIS) {
+        receiveDone = false;
+        HAL_UART_Receive_IT(&huart6, (uint8_t *) &uartByte, 1);
+        while (!receiveDone) {}
+    }
+
+//    pos_err -= 30;
+//    switch ((pos_err + 5) / 10) {
+//        case 20:
+//            topSteering.SetSteeringCompare(1510);
+//            break;
+//        case 21:
+//            topSteering.SetSteeringCompare(1515);
+//            break;
+//        case 22:
+//            topSteering.SetSteeringCompare(1525);
+//            break;
+//        case 23:
+//            topSteering.SetSteeringCompare(1530);
+//            break;
+//        case 24:
+//            topSteering.SetSteeringCompare(1535);
+//            break;
+//        case 25:
+//            topSteering.SetSteeringCompare(1540);
+//            break;
+//        case 26:
+//            topSteering.SetSteeringCompare(1550);
+//            break;
+//        case 27:
+//            topSteering.SetSteeringCompare(1555);
+//            break;
+//        case 28:
+//            topSteering.SetSteeringCompare(1565);
+//            break;
+//        case 29:
+//            topSteering.SetSteeringCompare(1570);
+//            break;
+//        case 30:
+//            topSteering.SetSteeringCompare(1575);
+//            break;
+//        case 31:
+//            topSteering.SetSteeringCompare(1580);
+//            break;
+//        default:
+//            break;
+//    }
+    auto p1 = -1.537793861264471e-06;
+    auto p2 = 0.001674084311962;
+    auto p3 = -0.675897479945635;
+    auto p4 = 1.208877170121495e+02;
+    auto p5 = -6.545889634786366e+03;
     pos_err -= 30;
     auto pwm_top = p1 * pow(pos_err, 4) + p2 * pow(pos_err, 3) + p3 * pow(pos_err, 2) + p4 * pos_err + p5;
     topSteering.SetSteeringCompare(pwm_top);
 
+
     Charge(5);
-    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
-    HAL_Delay(500);
     HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_RESET);
+    HAL_Delay(500);
+    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
     topSteering.SetSteeringCompare(1700);
 
 //    HAL_UART_Transmit(&huart1, (uint8_t *) "auto shoot\r\n", strlen("auto shoot\r\n"), 0xff);
@@ -138,11 +211,11 @@ void RunningShoot() {
     // 水平方向与中轴线夹角-30
     bottomSteering.SetSteeringCompare(1270);
     HAL_Delay(1000);
-    topSteering.SetSteeringCompare(1640);
+    topSteering.SetSteeringCompare(1585);
     HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
 
 
-    //TODO:-30~30~-30
+    // -30~30~-30
     while (!isShot) {
         for (auto i = 1270; i < 1809; i += 3) {
             bottomSteering.SetSteeringCompare(i);
@@ -153,7 +226,7 @@ void RunningShoot() {
 //                HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
 //                isShot = true;
 //            }
-            HAL_Delay(20);
+            HAL_Delay(10);
         }
         for (auto i = 1809; i > 1270; i -= 3) {
             bottomSteering.SetSteeringCompare(i);
@@ -164,10 +237,10 @@ void RunningShoot() {
 //                HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
 //                isShot = true;
 //            }
-            HAL_Delay(20);
+            HAL_Delay(10);
         }
     }
-    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
     topSteering.SetSteeringCompare(1700);
     // 延时500ms
 
@@ -183,7 +256,7 @@ void RunningShoot() {
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == htim2.Instance) {
         HAL_GPIO_WritePin(Charge_Control_GPIO_Port, Charge_Control_Pin, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_RESET);
         isShot = true;
         HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_2);
     }
@@ -221,10 +294,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
                 pos_flag = RIGHT;
             } else if (x_str[0] == 'n') {
                 pos_flag = NFD;
-            } else if (x_str[0] == 'd') {
+            } else if (x_str[0] == 's') {
                 pos_flag = STOP;
+            } else if (x_str[0] == 'd') {
+                pos_flag = DIS;
             }
-            pos_err = atoi(y_str);
+            if (x_str[0] != 's') {
+                pos_err = atoi(y_str);
+            }
             receiveDone = true;
             receivingFlag = false;
             memset(uartBuf, 0, sizeof(uartBuf));

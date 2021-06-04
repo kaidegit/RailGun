@@ -289,9 +289,9 @@ void Key::ReadBtn() {
                     HAL_GPIO_WritePin(Charge_Control_GPIO_Port, Charge_Control_Pin, GPIO_PIN_SET);
                     HAL_Delay(4000);
                     HAL_GPIO_WritePin(Charge_Control_GPIO_Port, Charge_Control_Pin, GPIO_PIN_RESET);
-                    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
-                    HAL_Delay(500);
                     HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_RESET);
+                    HAL_Delay(500);
+                    HAL_GPIO_WritePin(Shot_Control_GPIO_Port, Shot_Control_Pin, GPIO_PIN_SET);
                     break;
                 default:
                     break;
