@@ -1,5 +1,5 @@
 # ******************************************************************************
-#   * @file   my_electromagnetic gun.py
+#   * @file   my_electromagnetic_gun.py
 #   * @author jiangtao
 #   * @date   2021.6.7
 #   * @brief  This file includes the measurement of Red circle target and a interrupt
